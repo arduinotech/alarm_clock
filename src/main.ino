@@ -52,6 +52,17 @@ byte state = 0;
 
 void setup()
 {
+  int alarmHours = EEPROM.read(0);
+  int alarmMinutes = EEPROM.read(1);
+
+  if (alarmHours > 24 || alarmHours < 0) {
+    EEPROM.write(0, 0);
+  }
+
+  if (alarmMinutes > 60 || alarmMinutes < 0) {
+    EEPROM.write(1, 0);
+  }
+
   pinMode(BUTTON_1_PIN, INPUT);
   pinMode(BUTTON_2_PIN, INPUT);
 
@@ -64,8 +75,6 @@ void loop()
   static unsigned long lastLoop = 0;
   static uint8_t settingHours;
   static uint8_t settingMinutes;
-
-  
 
   static int alarmHours = EEPROM.read(0);
   static int alarmMinutes = EEPROM.read(1);
@@ -129,7 +138,6 @@ void loop()
     button1OldState = LOW;
   }
 
-
   if ((((button2NewState == HIGH) && (button2OldState == LOW) && ((now - lastPressButton2Time) > 500))) ||
      ((button2NewState == HIGH) && ((now - lastPressButton2Time) > 200) && ((state == STATE_TIME_SETTING_HOURS) || (state == STATE_TIME_SETTING_MINUTES)))) {
     if (state == STATE_CLOCK_IS_ON) {
@@ -163,5 +171,3 @@ void loop()
     button2OldState = LOW;
   }
 }
-
-
