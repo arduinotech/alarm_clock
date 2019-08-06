@@ -1,7 +1,8 @@
 /*
 	Simple alarm clock
 
-  This alarm clock shows the current time, plays the melody at the specified time and also saves the settings when the power is turned off.
+  This alarm clock shows the current time, plays the melody at the specified
+  time and also saves the settings when the power is turned off.
 
 	The circuit:
 	* Arduino uno
@@ -13,7 +14,7 @@
 
 	Created 24 february 2019
 	By https://arduino.tech
-  
+
 */
 #include <Arduino.h>
 #include <EEPROM.h>
@@ -40,10 +41,10 @@ Display display(DISPLAY_CLK_PIN, DISPLAY_DIO_PIN);
 MelodyPlayer melodyPlayer(SPEAKER_PIN);
 Clock clock;
 
-int button1OldState = LOW;
-int button2OldState = LOW;
-int button1NewState = LOW;
-int button2NewState = LOW;
+int button1OldState = HIGH;
+int button2OldState = HIGH;
+int button1NewState = HIGH;
+int button2NewState = HIGH;
 unsigned long lastPressButton1Time = 0;
 unsigned long lastPressButton2Time = 0;
 
@@ -63,8 +64,8 @@ void setup()
     EEPROM.write(1, 0);
   }
 
-  pinMode(BUTTON_1_PIN, INPUT);
-  pinMode(BUTTON_2_PIN, INPUT);
+  pinMode(BUTTON_1_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_2_PIN, INPUT_PULLUP);
 
   melodyPlayer.init();
   display.init();
@@ -95,20 +96,20 @@ void loop()
         melodyPlayer.playStarwars();
         melodyPlayer.playStarwars();
       }
-    } else if ((state == STATE_TIME_SETTING_HOURS) && (button2NewState != HIGH)) {
+    } else if ((state == STATE_TIME_SETTING_HOURS) && (button2NewState != LOW)) {
       display.showTimeSettingHours(settingHours, settingMinutes, true);
-    } else if ((state == STATE_TIME_SETTING_MINUTES) && (button2NewState != HIGH)) {
+    } else if ((state == STATE_TIME_SETTING_MINUTES) && (button2NewState != LOW)) {
       display.showTimeSettingMinutes(settingHours, settingMinutes, true);
-    } else if ((state == STATE_ALARM_SETTING_HOURS) && (button1NewState != HIGH)) {
+    } else if ((state == STATE_ALARM_SETTING_HOURS) && (button1NewState != LOW)) {
       display.showAlarmSettingHours(alarmHours, alarmMinutes, true);
-    } else if ((state == STATE_ALARM_SETTING_MINUTES) && (button1NewState != HIGH)) {
+    } else if ((state == STATE_ALARM_SETTING_MINUTES) && (button1NewState != LOW)) {
       display.showAlarmSettingMinutes(alarmHours, alarmMinutes, true);
     }
     lastLoop = now;
   }
 
-  if ((((button1NewState == HIGH) && (button1OldState == LOW) && ((now - lastPressButton1Time) > 500))) ||
-     ((button1NewState == HIGH) && ((now - lastPressButton1Time) > 200) && ((state == STATE_ALARM_SETTING_HOURS) || (state == STATE_ALARM_SETTING_MINUTES)))) {
+  if ((((button1NewState == LOW) && (button1OldState == HIGH) && ((now - lastPressButton1Time) > 500))) ||
+     ((button1NewState == LOW) && ((now - lastPressButton1Time) > 200) && ((state == STATE_ALARM_SETTING_HOURS) || (state == STATE_ALARM_SETTING_MINUTES)))) {
     if (state == STATE_CLOCK_IS_ON) {
       state = STATE_TIME_SETTING_HOURS;
       timeclock_t time = clock.getCurrentTime();
@@ -132,14 +133,14 @@ void loop()
       }
       display.showAlarmSettingMinutes(alarmHours, alarmMinutes, false);
     }
-    button1OldState = HIGH;
-    lastPressButton1Time = now;
-  } else if ((button1NewState == LOW) && (button1OldState == HIGH)) {
     button1OldState = LOW;
+    lastPressButton1Time = now;
+  } else if ((button1NewState == HIGH) && (button1OldState == LOW)) {
+    button1OldState = HIGH;
   }
 
-  if ((((button2NewState == HIGH) && (button2OldState == LOW) && ((now - lastPressButton2Time) > 500))) ||
-     ((button2NewState == HIGH) && ((now - lastPressButton2Time) > 200) && ((state == STATE_TIME_SETTING_HOURS) || (state == STATE_TIME_SETTING_MINUTES)))) {
+  if ((((button2NewState == LOW) && (button2OldState == HIGH) && ((now - lastPressButton2Time) > 500))) ||
+     ((button2NewState == LOW) && ((now - lastPressButton2Time) > 200) && ((state == STATE_TIME_SETTING_HOURS) || (state == STATE_TIME_SETTING_MINUTES)))) {
     if (state == STATE_CLOCK_IS_ON) {
       state = STATE_ALARM_SETTING_HOURS;
     } else if (state == STATE_ALARM_SETTING_HOURS) {
@@ -165,9 +166,9 @@ void loop()
       }
       display.showTimeSettingMinutes(settingHours, settingMinutes, false);
     }
-    button2OldState = HIGH;
-    lastPressButton2Time = now;
-  } else if (button2NewState == LOW) {
     button2OldState = LOW;
+    lastPressButton2Time = now;
+  } else if (button2NewState == HIGH) {
+    button2OldState = HIGH;
   }
 }
