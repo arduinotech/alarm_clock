@@ -3,7 +3,7 @@ Simple alarm clock on arduino uno shows the current time, plays the melody at th
 
 Project page on my website: [https://arduino-technology.ru/projects/alarm-clock/](https://arduino-technology.ru/projects/alarm-clock/)
 
-<F3>![Arduino alarm clock schema](https://raw.githubusercontent.com/arduinotech/alarm_clock/master/48595536941_b891d51574_z.jpg)
+<F3>![Arduino alarm clock photo](https://raw.githubusercontent.com/arduinotech/alarm_clock/master/48595536941_b891d51574_z.jpg)
 
 <F3>![Arduino alarm clock schema](https://raw.githubusercontent.com/arduinotech/alarm_clock/master/schema.png)
 
